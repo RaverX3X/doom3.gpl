@@ -1,5 +1,30 @@
-// Copyright (C) 2004 Id Software, Inc.
-//
+/*
+===========================================================================
+
+Doom 3 GPL Source Code
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+
+Doom 3 Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Doom 3 Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
 
 #include "../idlib/precompiled.h"
 #pragma hdrstop
@@ -439,7 +464,7 @@ void idEntity::Spawn( void ) {
 	gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
 
 	renderEntity.entityNum = entityNumber;
-
+	
 	// go dormant within 5 frames so that when the map starts most monsters are dormant
 	dormantStart = gameLocal.time - DELAY_DORMANT_TIME + gameLocal.msec * 5;
 
@@ -501,15 +526,7 @@ void idEntity::Spawn( void ) {
 		}
 	}
 
-// sikk---> Doom/Custom Health Values
-	if ( g_enemyHealthType.GetInteger() == 1 && spawnArgs.GetInt( "health_doom" ) ) {
-		health = spawnArgs.GetInt( "health_doom" );
-	} else if ( g_enemyHealthType.GetInteger() == 2 && spawnArgs.GetInt( "health_custom" ) ) {
-		health = spawnArgs.GetInt( "health_custom" );
-	} else {
-		health = spawnArgs.GetInt( "health" );
-	}
-// <---sikk
+	health = spawnArgs.GetInt( "health" );
 
 	InitDefaultPhysics( origin, axis );
 
@@ -846,7 +863,7 @@ bool idEntity::DoDormantTests( void ) {
 		return false;
 	}
 
-//	return false;	// sikk - warning C4702: unreachable code
+	return false;
 }
 
 /*
@@ -2528,7 +2545,7 @@ bool idEntity::RunPhysics( void ) {
 	endTime = gameLocal.time;
 
 	gameLocal.push.InitSavingPushedEntityPositions();
-	blockedPart = blockingEntity = NULL;	// sikk - warning C4701: potentially uninitialized local variable used
+	blockedPart = NULL;
 
 	// save the physics state of the whole team and disable the team for collision detection
 	for ( part = this; part != NULL; part = part->teamChain ) {
@@ -2968,16 +2985,7 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		gameLocal.Error( "Unknown damageDef '%s'\n", damageDefName );
 	}
 
-// sikk---> Damage Type
-	int	damage;
-	if ( g_damageType.GetInteger() == 1 && damageDef->GetInt( "damage_doom_scale" ) ) {
-		damage = damageDef->GetInt( "damage_doom_scale" ) * ( gameLocal.random.RandomInt( 255 ) % damageDef->GetInt( "damage_doom_range" ) + 1 );
-	} else if ( g_damageType.GetInteger() == 2 && damageDef->GetInt( "damage_custom" ) ) {
-		damage = damageDef->GetInt( "damage_custom" );
-	} else {
-		damage = damageDef->GetInt( "damage" );
-	}
-// <---sikk
+	int	damage = damageDef->GetInt( "damage" );
 
 	// inform the attacker that they hit someone
 	attacker->DamageFeedback( this, inflictor, damage );
@@ -4836,7 +4844,7 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 			return false;
 		}
 	}
-//	return false;	// sikk - warning C4702: unreachable code
+	return false;
 }
 
 /*
@@ -5279,7 +5287,7 @@ bool idAnimatedEntity::ClientReceiveEvent( int event, int time, const idBitMsg &
 			return idEntity::ClientReceiveEvent( event, time, msg );
 		}
 	}
-//	return false;	// sikk - warning C4702: unreachable code
+	return false;
 }
 
 /*
